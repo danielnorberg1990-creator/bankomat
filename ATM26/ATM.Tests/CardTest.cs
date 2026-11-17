@@ -2,8 +2,11 @@ namespace ATM.ATM.Tests;
 
 using Xunit;
 
+// Enhetstester för Card-klassen: kortnummer, PIN-kod, koppling till konto
+// samt metoden MatchesPin.
 public class CardTest
 {
+    // Kortet ska lagra exakt det kortnummer som gavs i konstruktorn.
     [Fact]
     public void CardHasCardNumberTest()
     {
@@ -14,6 +17,18 @@ public class CardTest
         Assert.Equal(testCardNumber, card.CardNumber);
     }
 
+    // Kortet ska lagra exakt den PIN-kod som gavs i konstruktorn.
+    [Fact]
+    public void CardHasPinCodeTest()
+    {
+        string testPin = "1234";
+        Account account = new Account(5000);
+        Card card = new Card("1234-5678", testPin, account);
+        Assert.Equal(testPin, card.PinCode);
+    }
+
+    // Kortet ska vara kopplat till just det konto som gavs i konstruktorn
+    // (samma objektinstans, inte en kopia).
     [Fact]
     public void CardIsLinkedToAccountTest()
     {
@@ -25,9 +40,11 @@ public class CardTest
         Assert.Same(account, card.Account);
     }
 
+    // MatchesPin: true endast när inmatad PIN är exakt lika med kortets PIN.
+    // Testar även tom PIN, för lång PIN och ett annat kort med annan PIN.
     [Theory]
     [InlineData("1234", "1234", true)]
-    [InlineData("1234", "1235", false)]
+    [InlineData("1234", "2345", false)]
     [InlineData("1234", "", false)]
     [InlineData("1234", "12345", false)]
     [InlineData("0000", "0000", true)]
